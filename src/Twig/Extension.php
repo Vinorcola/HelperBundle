@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Twig;
+namespace Vinorcola\HelperBundle\Twig;
 
 use DateTime;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -82,7 +82,7 @@ class Extension extends AbstractExtension
      */
     public function tra(string $attribute, string $entity, array $parameters = []): string
     {
-        return $this->translateWithParameters('entity.' . $entity . '.' . $attribute, $parameters);
+        return $this->translateWithParameters('attribute.' . $entity . '.' . $attribute, $parameters);
     }
 
     /**
