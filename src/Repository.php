@@ -10,7 +10,7 @@ abstract class Repository
     /**
      * @var EntityManagerInterface
      */
-    private $entityManager;
+    protected $entityManager;
 
     /**
      * Repository constructor.
