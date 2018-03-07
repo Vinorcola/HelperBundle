@@ -31,7 +31,7 @@ abstract class Controller extends BaseController
         }
 
         $form->addError(new FormError(
-            $this->container->get('translator')->trans($messageKey, $messageParameters),
+            $this->container->get('translator')->trans($messageKey, $messageParameters, 'validators'),
             $messageKey,
             $messageParameters
         ));
