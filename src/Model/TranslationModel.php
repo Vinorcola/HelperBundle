@@ -45,6 +45,23 @@ class TranslationModel
     }
 
     /**
+     * Translate a key prefixed with the current route name.
+     *
+     * @param string   $key
+     * @param int      $nb
+     * @param string[] $parameters
+     * @return string
+     */
+    public function trPlural(string $key, int $nb, array $parameters = []): string
+    {
+        return $this->translatePlural(
+            $this->requestStack->getCurrentRequest()->get('_route') . '.' . $key,
+            $nb,
+            $parameters
+        );
+    }
+
+    /**
      * Translate an entity attribute.
      *
      * @param string   $attribute
@@ -80,5 +97,31 @@ class TranslationModel
         }
 
         return $this->translator->trans($key, $securedParameters, $domain);
+    }
+
+    /**
+     * Translate a given key with given parameters.
+     *
+     * The parameters' names will be wrapped by percent sign if they are not already.
+     *
+     * @param string   $key
+     * @param int      $nb
+     * @param string[] $parameters
+     * @param string   $domain
+     * @return string
+     */
+    public function translatePlural(string $key, int $nb, array $parameters = [], string $domain = 'messages'): string
+    {
+        $securedParameters = [];
+        foreach ($parameters as $name => $value) {
+            $name = (string) $name;
+            if ($name[0] !== '%' || $name[mb_strlen($name) - 1] !== '%') {
+                $securedParameters['%' . $name . '%'] = $value;
+            } else {
+                $securedParameters[$name] = $value;
+            }
+        }
+
+        return $this->translator->transChoice($key, $nb, $securedParameters, $domain);
     }
 }

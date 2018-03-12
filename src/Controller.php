@@ -12,7 +12,7 @@ abstract class Controller extends BaseController
     /**
      * @var TranslationModel
      */
-    private $translationModel;
+    protected $translationModel;
 
     /**
      * Controller constructor.
