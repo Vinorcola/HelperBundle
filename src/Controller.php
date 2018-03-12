@@ -36,4 +36,42 @@ abstract class Controller extends BaseController
             $messageParameters
         ));
     }
+
+    /**
+     * Add a flash message.
+     *
+     * @param string   $type
+     * @param string   $messageKey
+     * @param string[] $messageParameters
+     */
+    protected function addMessage(string $type, string $messageKey, array $messageParameters = []): void
+    {
+        if (!$this->container->has('translator')) {
+            throw new LogicException('Translator service must be registered as a public service.');
+        }
+
+        $this->addFlash($type, $this->container->get('translator')->trans($messageKey, $messageParameters));
+    }
+
+    /**
+     * Add an error flash message.
+     *
+     * @param string   $messageKey
+     * @param string[] $messageParameters
+     */
+    protected function addErrorMessage(string $messageKey, array $messageParameters = []): void
+    {
+        $this->addMessage('error', $messageKey, $messageParameters);
+    }
+
+    /**
+     * Add a success flash message.
+     *
+     * @param string   $messageKey
+     * @param string[] $messageParameters
+     */
+    protected function addSuccessMessage(string $messageKey, array $messageParameters = []): void
+    {
+        $this->addMessage('success', $messageKey, $messageParameters);
+    }
 }
