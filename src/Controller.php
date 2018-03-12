@@ -2,13 +2,28 @@
 
 namespace Vinorcola\HelperBundle;
 
-use LogicException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
+use Vinorcola\HelperBundle\Model\TranslationModel;
 
 abstract class Controller extends BaseController
 {
+    /**
+     * @var TranslationModel
+     */
+    private $translationModel;
+
+    /**
+     * Controller constructor.
+     *
+     * @param TranslationModel $translationModel
+     */
+    public function __construct(TranslationModel $translationModel)
+    {
+        $this->translationModel = $translationModel;
+    }
+
     /**
      * Save the database.
      */
@@ -26,12 +41,8 @@ abstract class Controller extends BaseController
      */
     protected function addFormError(FormInterface $form, string $messageKey, array $messageParameters = []): void
     {
-        if (!$this->container->has('translator')) {
-            throw new LogicException('Translator service must be registered as a public service.');
-        }
-
         $form->addError(new FormError(
-            $this->container->get('translator')->trans($messageKey, $messageParameters, 'validators'),
+            $this->translationModel->translate($messageKey, $messageParameters, 'validators'),
             $messageKey,
             $messageParameters
         ));
@@ -46,11 +57,7 @@ abstract class Controller extends BaseController
      */
     protected function addMessage(string $type, string $messageKey, array $messageParameters = []): void
     {
-        if (!$this->container->has('translator')) {
-            throw new LogicException('Translator service must be registered as a public service.');
-        }
-
-        $this->addFlash($type, $this->container->get('translator')->trans($messageKey, $messageParameters));
+        $this->addFlash($type, $this->translationModel->tr($messageKey, $messageParameters));
     }
 
     /**

@@ -3,34 +3,26 @@
 namespace Vinorcola\HelperBundle\Twig;
 
 use DateTime;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Translation\TranslatorInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
+use Vinorcola\HelperBundle\Model\TranslationModel;
 
 class Extension extends AbstractExtension
 {
     /**
-     * @var TranslatorInterface
+     * @var TranslationModel
      */
-    private $translator;
-
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
+    private $translationModel;
 
     /**
      * Extension constructor.
      *
-     * @param TranslatorInterface $translator
-     * @param RequestStack        $requestStack
+     * @param TranslationModel $translationModel
      */
-    public function __construct(TranslatorInterface $translator, RequestStack $requestStack)
+    public function __construct(TranslationModel $translationModel)
     {
-        $this->translator = $translator;
-        $this->requestStack = $requestStack;
+        $this->translationModel = $translationModel;
     }
 
     /**
@@ -66,10 +58,7 @@ class Extension extends AbstractExtension
      */
     public function tr(string $key, array $parameters = []): string
     {
-        return $this->translateWithParameters(
-            $this->requestStack->getCurrentRequest()->get('_route') . '.' . $key,
-            $parameters
-        );
+        return $this->translationModel->tr($key, $parameters);
     }
 
     /**
@@ -82,7 +71,7 @@ class Extension extends AbstractExtension
      */
     public function tra(string $attribute, string $entity, array $parameters = []): string
     {
-        return $this->translateWithParameters('attribute.' . $entity . '.' . $attribute, $parameters);
+        return $this->translationModel->tra($attribute, $entity, $parameters);
     }
 
     /**
@@ -109,22 +98,5 @@ class Extension extends AbstractExtension
         }
 
         return json_encode($value);
-    }
-
-    /**
-     * Auto add percent sign around translation parameters.
-     *
-     * @param string $key
-     * @param array  $parameters
-     * @return string
-     */
-    private function translateWithParameters(string $key, array $parameters = []): string
-    {
-        $escapedParameters = [];
-        foreach ($parameters as $name => $value) {
-            $escapedParameters['%' . $name . '%'] = $value;
-        }
-
-        return $this->translator->trans($key, $escapedParameters);
     }
 }
