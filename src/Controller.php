@@ -63,22 +63,20 @@ abstract class Controller extends BaseController
     /**
      * Add an error flash message.
      *
-     * @param string   $messageKey
      * @param string[] $messageParameters
      */
-    protected function addErrorMessage(string $messageKey, array $messageParameters = []): void
+    protected function addErrorMessage(array $messageParameters = []): void
     {
-        $this->addMessage('error', $messageKey, $messageParameters);
+        $this->addMessage('error', 'error', $messageParameters);
     }
 
     /**
      * Add a success flash message.
      *
-     * @param string   $messageKey
      * @param string[] $messageParameters
      */
-    protected function addSuccessMessage(string $messageKey, array $messageParameters = []): void
+    protected function addSuccessMessage(array $messageParameters = []): void
     {
-        $this->addMessage('success', $messageKey, $messageParameters);
+        $this->addMessage('success', 'success', $messageParameters);
     }
 }
