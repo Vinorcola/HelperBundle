@@ -1,7 +1,7 @@
-{% for type in [ 'success', 'error' ] %}
+{% for type in [ 'success', 'info', 'warning', 'error' ] %}
     {% for messages in app.flashes([ type ]) %}
         {% if messages is not empty %}
-            <div class="alert alert-{{ type }}">
+            <div class="alert alert-{{ type == "error" ? "danger" : type }}">
                 {% for message in messages %}
                     <p>{{ message }}</p>
                 {% endfor %}
