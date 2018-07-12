@@ -64,10 +64,11 @@ abstract class Controller extends BaseController
      * Add an error flash message.
      *
      * @param string[] $messageParameters
+     * @param bool     $bootstrapTheme If true, set a "danger" flash instead of an "error" flash.
      */
-    protected function addErrorMessage(array $messageParameters = []): void
+    protected function addErrorMessage(array $messageParameters = [], bool $bootstrapTheme = false): void
     {
-        $this->addMessage('error', 'error', $messageParameters);
+        $this->addMessage($bootstrapTheme ? 'danger' : 'error', 'error', $messageParameters);
     }
 
     /**
