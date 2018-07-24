@@ -136,7 +136,7 @@ class TranslationModel
      * @param string $key
      * @return bool
      */
-    private function isKeyAbsolute(string $key): bool
+    public function isKeyAbsolute(string $key): bool
     {
         return $key[0] === '=';
     }
@@ -145,7 +145,7 @@ class TranslationModel
      * @param string $key
      * @return bool
      */
-    private function doesKeyRequirePlural(string $key): bool
+    public function doesKeyRequirePlural(string $key): bool
     {
         return substr($key, -1) === '+';
     }

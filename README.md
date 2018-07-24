@@ -131,7 +131,7 @@ class MyType extends AbstractType
 
 The bundle provide a base controller inheriting Symfony's base controller and helping working with the translation system. It provides methods to easily add error messages to form and flash messages.
 
-Furthermore, it provides a `saveDatabase()` method that is basically doing `$em->flush()`. Your controller gain in readability and you don't need to inject the `EntityManage` anymore if you are working with repositories as services!
+Furthermore, it provides a `saveDatabase()` method that is basically doing `$em->flush()`. Your controller gain in readability and you don't need to inject the `EntityManager` anymore if you are working with repositories as services!
 
 ## Simple repository
 

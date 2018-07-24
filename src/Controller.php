@@ -38,13 +38,17 @@ abstract class Controller extends BaseController
      * @param FormInterface $form
      * @param string        $messageKey
      * @param string[]      $messageParameters
+     * @param string        $domain
      */
-    protected function addFormError(FormInterface $form, string $messageKey, array $messageParameters = []): void
+    protected function addFormError(FormInterface $form, string $messageKey, array $messageParameters = [], string $domain = 'validators'): void
     {
         $form->addError(new FormError(
-            $this->translationModel->translate($messageKey, $messageParameters, 'validators'),
+            $this->translationModel->tr($messageKey, $messageParameters, $domain),
             $messageKey,
-            $messageParameters
+            $messageParameters,
+            $this->translationModel->doesKeyRequirePlural($messageKey) ?
+                $messageParameters[TranslationModel::PLURAL_PARAMETER] :
+                null
         ));
     }
 
@@ -54,10 +58,11 @@ abstract class Controller extends BaseController
      * @param string   $type
      * @param string   $messageKey
      * @param string[] $messageParameters
+     * @param string   $domain
      */
-    protected function addMessage(string $type, string $messageKey, array $messageParameters = []): void
+    protected function addMessage(string $type, string $messageKey, array $messageParameters = [], string $domain = 'messages'): void
     {
-        $this->addFlash($type, $this->translationModel->tr($messageKey, $messageParameters));
+        $this->addFlash($type, $this->translationModel->tr($messageKey, $messageParameters, $domain));
     }
 
     /**
@@ -72,6 +77,16 @@ abstract class Controller extends BaseController
     }
 
     /**
+     * Add an info flash message.
+     *
+     * @param string[] $messageParameters
+     */
+    protected function addInfoMessage(array $messageParameters = []): void
+    {
+        $this->addMessage('info', 'info', $messageParameters);
+    }
+
+    /**
      * Add a success flash message.
      *
      * @param string[] $messageParameters
@@ -79,5 +94,15 @@ abstract class Controller extends BaseController
     protected function addSuccessMessage(array $messageParameters = []): void
     {
         $this->addMessage('success', 'success', $messageParameters);
+    }
+
+    /**
+     * Add a warning flash message.
+     *
+     * @param string[] $messageParameters
+     */
+    protected function addWarningMessage(array $messageParameters = []): void
+    {
+        $this->addMessage('warning', 'warning', $messageParameters);
     }
 }
