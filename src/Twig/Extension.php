@@ -54,11 +54,12 @@ class Extension extends AbstractExtension
      *
      * @param string   $key
      * @param string[] $parameters
+     * @param string   $domain
      * @return string
      */
-    public function tr(string $key, array $parameters = []): string
+    public function tr(string $key, array $parameters = [], string $domain = 'messages'): string
     {
-        return $this->translationModel->tr($key, $parameters);
+        return $this->translationModel->tr($key, $parameters, $domain);
     }
 
     /**
@@ -67,22 +68,24 @@ class Extension extends AbstractExtension
      * @param string   $attribute
      * @param string   $entity
      * @param string[] $parameters
+     * @param string   $domain
      * @return string
      */
-    public function tra(string $attribute, string $entity, array $parameters = []): string
+    public function tra(string $attribute, string $entity, array $parameters = [], string $domain = 'messages'): string
     {
-        return $this->translationModel->tra($attribute, $entity, $parameters);
+        return $this->translationModel->tra($attribute, $entity, $parameters, $domain);
     }
 
     /**
      * Translate page title.
      *
      * @param string[] $parameters
+     * @param string   $domain
      * @return string
      */
-    public function pageTitle(array $parameters = []): string
+    public function pageTitle(array $parameters = [], string $domain = 'messages'): string
     {
-        return $this->tr('title', $parameters);
+        return $this->translationModel->tr('title', $parameters, $domain);
     }
 
     /**

@@ -49,7 +49,8 @@ abstract class Repository
      */
     protected function createQueryBuilder(string $alias): QueryBuilder
     {
-        return $this->entityManager->createQueryBuilder()
+        return $this->entityManager
+            ->createQueryBuilder()
             ->from(static::getEntityClass(), $alias)->select($alias);
     }
 }
