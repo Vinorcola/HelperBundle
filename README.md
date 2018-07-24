@@ -73,7 +73,7 @@ If you require a plural translation, you can suffix your message key with a `+` 
 {{ 'myRouteName.message'|transchoice(5, { '%title%': someTitle, '%date%': someDate }) }}
 
 {# With VinorcolaHelper translation #}
-{{ 'message+'|tr({ pluralParam: 5, title: someTitle, date: someDate }) }}
+{{ 'message+'|tr({ count: 5, title: someTitle, date: someDate }) }}
 ```
 
 ### Messages linked to object attributes

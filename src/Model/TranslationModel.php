@@ -8,7 +8,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 class TranslationModel
 {
     public const ENTITY_ATTRIBUTE_PREFIX = 'attribute.';
-    public const PLURAL_PARAMETER = 'pluralParam';
+    public const PLURAL_PARAMETER = 'count';
 
     /**
      * @var TranslatorInterface
@@ -37,7 +37,7 @@ class TranslationModel
      *
      * The key may be relative (e.g. "myKey"). It will be prepended with the route name (e.g. "myRoute.myKey").
      * The key may be absolute (e.g. "=myNamespace.myKey" which will be interpreted as "myNamespace.myKey").
-     * The key can require plural form (e.g. "myKey+" or "=myNamespace.myKey+"). You must then provide a "pluralParam"
+     * The key can require plural form (e.g. "myKey+" or "=myNamespace.myKey+"). You must then provide a "count"
      * parameter.
      *
      * @param string   $key
@@ -122,14 +122,14 @@ class TranslationModel
      * The parameters' names will be wrapped by percent sign if they are not already.
      *
      * @param string   $key
-     * @param int      $pluralParameter
+     * @param int      $count
      * @param string[] $parameters
      * @param string   $domain
      * @return string
      */
-    public function translatePlural(string $key, int $pluralParameter, array $parameters = [], string $domain = 'messages'): string
+    public function translatePlural(string $key, int $count, array $parameters = [], string $domain = 'messages'): string
     {
-        return $this->translator->transChoice($key, $pluralParameter, $this->resolveParameters($parameters), $domain);
+        return $this->translator->transChoice($key, $count, $this->resolveParameters($parameters), $domain);
     }
 
     /**
