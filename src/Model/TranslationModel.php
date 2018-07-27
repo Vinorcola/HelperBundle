@@ -152,9 +152,9 @@ class TranslationModel
 
     /**
      * @param string $key
-     * @return bool
+     * @return string
      */
-    private function resolveMessage(string $key): bool
+    private function resolveMessage(string $key): string
     {
         return rtrim(
             $this->isKeyAbsolute($key) ?
