@@ -2,7 +2,7 @@
 
 namespace Vinorcola\HelperBundle\Twig;
 
-use DateTime;
+use DateTimeInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
@@ -34,7 +34,7 @@ class Extension extends AbstractExtension
             new TwigFilter('tr', [ $this, 'tr' ]),
             new TwigFilter('tra', [ $this, 'tra' ]),
             new TwigFilter('toJs', [ $this, 'toJs' ], [
-                'is_safe' => [ 'js' ],
+                'is_safe' => [ 'html' ],
             ]),
         ];
     }
@@ -96,7 +96,7 @@ class Extension extends AbstractExtension
      */
     public function toJs($value): string
     {
-        if ($value instanceof DateTime) {
+        if ($value instanceof DateTimeInterface) {
             return 'new Date(' . $value->format('Y') . ', ' . ($value->format('m') - 1) . ', ' . $value->format('d') . ')';
         }
 
