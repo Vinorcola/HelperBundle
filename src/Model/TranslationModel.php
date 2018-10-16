@@ -2,12 +2,10 @@
 
 namespace Vinorcola\HelperBundle\Model;
 
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class TranslationModel
 {
-    public const ENTITY_ATTRIBUTE_PREFIX = 'attribute.';
     public const PLURAL_PARAMETER = 'count';
 
     /**
@@ -16,20 +14,38 @@ class TranslationModel
     private $translator;
 
     /**
-     * @var RequestStack
+     * @var RouteNamespaceModel
      */
-    private $requestStack;
+    private $routeNamespaceModel;
+
+    /**
+     * @var string
+     */
+    private $attributePrefix;
+
+    /**
+     * @var string
+     */
+    private $separator;
 
     /**
      * TranslationModel constructor.
      *
      * @param TranslatorInterface $translator
-     * @param RequestStack        $requestStack
+     * @param RouteNamespaceModel $routeNamespaceModel
+     * @param string              $attributePrefix
+     * @param string              $separator
      */
-    public function __construct(TranslatorInterface $translator, RequestStack $requestStack)
-    {
+    public function __construct(
+        TranslatorInterface $translator,
+        RouteNamespaceModel $routeNamespaceModel,
+        string $attributePrefix = 'attribute',
+        string $separator = '.'
+    ) {
         $this->translator = $translator;
-        $this->requestStack = $requestStack;
+        $this->routeNamespaceModel = $routeNamespaceModel;
+        $this->attributePrefix = $attributePrefix . $separator;
+        $this->separator = $separator;
     }
 
     /**
@@ -40,12 +56,12 @@ class TranslationModel
      * The key can require plural form (e.g. "myKey+" or "=myNamespace.myKey+"). You must then provide a "count"
      * parameter.
      *
-     * @param string   $key
-     * @param string[] $parameters
-     * @param string   $domain
+     * @param string      $key
+     * @param string[]    $parameters
+     * @param string|null $domain
      * @return string
      */
-    public function tr(string $key, array $parameters = [], string $domain = 'messages'): string
+    public function tr(string $key, array $parameters = [], string $domain = null): string
     {
         return $this->doesKeyRequirePlural($key) ?
             $this->translatePlural(
@@ -67,13 +83,14 @@ class TranslationModel
      * The key may be relative (e.g. "myKey"). It will be prepended with the route name (e.g. "myRoute.myKey").
      * The key may be absolute (e.g. "=myNamespace.myKey" which will be interpreted as "myNamespace.myKey").
      *
-     * @param string   $key
-     * @param int      $nb
-     * @param string[] $parameters
-     * @param string   $domain
+     * @param string      $key
+     * @param int         $nb
+     * @param string[]    $parameters
+     * @param string|null $domain
      * @return string
+     * @deprecated Use tr with a pluralized key message (with a "+" at the end).
      */
-    public function trPlural(string $key, int $nb, array $parameters = [], string $domain = 'messages'): string
+    public function trPlural(string $key, int $nb, array $parameters = [], string $domain = null): string
     {
         return $this->translatePlural(
             $this->resolveMessage($key),
@@ -86,16 +103,16 @@ class TranslationModel
     /**
      * Translate an entity attribute.
      *
-     * @param string   $attribute
-     * @param string   $entity
-     * @param string[] $parameters
-     * @param string   $domain
+     * @param string      $attribute
+     * @param string      $entity
+     * @param string[]    $parameters
+     * @param string|null $domain
      * @return string
      */
-    public function tra(string $attribute, string $entity, array $parameters = [], string $domain = 'messages'): string
+    public function tra(string $attribute, string $entity, array $parameters = [], string $domain = null): string
     {
         return $this->translate(
-            self::ENTITY_ATTRIBUTE_PREFIX . $entity . '.' . $attribute,
+            $this->attributePrefix . $entity . $this->separator . $attribute,
             $parameters,
             $domain
         );
@@ -106,12 +123,13 @@ class TranslationModel
      *
      * The parameters' names will be wrapped by percent sign if they are not already.
      *
-     * @param string   $message
-     * @param string[] $parameters
-     * @param string   $domain
+     * @param string      $message
+     * @param string[]    $parameters
+     * @param string|null $domain
      * @return string
+     * @deprecated For internal usage only. Use tr with an absolute key message (with a "=" at the beginning).
      */
-    public function translate(string $message, array $parameters = [], string $domain = 'messages'): string
+    public function translate(string $message, array $parameters = [], string $domain = null): string
     {
         return $this->translator->trans($message, $this->resolveParameters($parameters), $domain);
     }
@@ -121,13 +139,14 @@ class TranslationModel
      *
      * The parameters' names will be wrapped by percent sign if they are not already.
      *
-     * @param string   $key
-     * @param int      $count
-     * @param string[] $parameters
-     * @param string   $domain
+     * @param string      $key
+     * @param int         $count
+     * @param string[]    $parameters
+     * @param string|null $domain
      * @return string
+     * @deprecated For internal usage only. Use tr with an absolute pluralized key message (with a "=" at the beginning and a "+" at the end).
      */
-    public function translatePlural(string $key, int $count, array $parameters = [], string $domain = 'messages'): string
+    public function translatePlural(string $key, int $count, array $parameters = [], string $domain = null): string
     {
         return $this->translator->transChoice($key, $count, $this->resolveParameters($parameters), $domain);
     }
@@ -147,7 +166,7 @@ class TranslationModel
      */
     public function doesKeyRequirePlural(string $key): bool
     {
-        return substr($key, -1) === '+';
+        return mb_substr($key, -1) === '+';
     }
 
     /**
@@ -156,12 +175,15 @@ class TranslationModel
      */
     private function resolveMessage(string $key): string
     {
-        return rtrim(
-            $this->isKeyAbsolute($key) ?
-                substr($key, 1) :
-                $this->requestStack->getCurrentRequest()->get('_route') . '.' . $key,
-            '+'
-        );
+        $resolvedKey = $this->isKeyAbsolute($key) ?
+            mb_substr($key, 1) :
+            $this->routeNamespaceModel->getFullNamespace() . $key;
+
+        if ($this->doesKeyRequirePlural($key)) {
+            $resolvedKey = mb_substr($resolvedKey, 0, -1);
+        }
+
+        return $resolvedKey;
     }
 
     /**

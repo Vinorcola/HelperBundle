@@ -3,10 +3,12 @@
 namespace Vinorcola\HelperBundle\Twig;
 
 use DateTimeInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Vinorcola\HelperBundle\Model\TranslationModel;
+use Vinorcola\HelperBundle\Model\UrlGeneratorModel;
 
 class Extension extends AbstractExtension
 {
@@ -16,13 +18,20 @@ class Extension extends AbstractExtension
     private $translationModel;
 
     /**
+     * @var UrlGeneratorModel
+     */
+    private $urlGeneratorModel;
+
+    /**
      * Extension constructor.
      *
-     * @param TranslationModel $translationModel
+     * @param TranslationModel  $translationModel
+     * @param UrlGeneratorModel $urlGeneratorModel
      */
-    public function __construct(TranslationModel $translationModel)
+    public function __construct(TranslationModel $translationModel, UrlGeneratorModel $urlGeneratorModel)
     {
         $this->translationModel = $translationModel;
+        $this->urlGeneratorModel = $urlGeneratorModel;
     }
 
     /**
@@ -50,14 +59,27 @@ class Extension extends AbstractExtension
     }
 
     /**
-     * Translate a key prefixed with the current route name.
+     * Generate a Url from a relative route name.
      *
-     * @param string   $key
-     * @param string[] $parameters
-     * @param string   $domain
+     * @param string $name
+     * @param array  $parameters
+     * @param bool   $relative
      * @return string
      */
-    public function tr(string $key, array $parameters = [], string $domain = 'messages'): string
+    public function rpath(string $name, array $parameters = array(), bool $relative = false): string
+    {
+        return $this->urlGeneratorModel->generate($name, $parameters, $relative ? UrlGeneratorInterface::RELATIVE_PATH : UrlGeneratorInterface::ABSOLUTE_PATH);
+    }
+
+    /**
+     * Translate a key prefixed with the current route name.
+     *
+     * @param string      $key
+     * @param string[]    $parameters
+     * @param string|null $domain
+     * @return string
+     */
+    public function tr(string $key, array $parameters = [], string $domain = null): string
     {
         return $this->translationModel->tr($key, $parameters, $domain);
     }
@@ -65,13 +87,13 @@ class Extension extends AbstractExtension
     /**
      * Translate an entity attribute.
      *
-     * @param string   $attribute
-     * @param string   $entity
-     * @param string[] $parameters
-     * @param string   $domain
+     * @param string      $attribute
+     * @param string      $entity
+     * @param string[]    $parameters
+     * @param string|null $domain
      * @return string
      */
-    public function tra(string $attribute, string $entity, array $parameters = [], string $domain = 'messages'): string
+    public function tra(string $attribute, string $entity, array $parameters = [], string $domain = null): string
     {
         return $this->translationModel->tra($attribute, $entity, $parameters, $domain);
     }
@@ -79,11 +101,11 @@ class Extension extends AbstractExtension
     /**
      * Translate page title.
      *
-     * @param string[] $parameters
-     * @param string   $domain
+     * @param string[]    $parameters
+     * @param string|null $domain
      * @return string
      */
-    public function pageTitle(array $parameters = [], string $domain = 'messages'): string
+    public function pageTitle(array $parameters = [], string $domain = null): string
     {
         return $this->translationModel->tr('title', $parameters, $domain);
     }
