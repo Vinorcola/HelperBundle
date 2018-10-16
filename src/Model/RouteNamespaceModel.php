@@ -37,7 +37,7 @@ class RouteNamespaceModel
     {
         $routeName = $this->requestStack->getMasterRequest()->get('_route');
 
-        return mb_substr($routeName, 0, mb_strpos($routeName, $this->separator) + 1);
+        return mb_substr($routeName, 0, mb_strrpos($routeName, $this->separator) + 1);
     }
 
     /**

@@ -55,6 +55,7 @@ class Extension extends AbstractExtension
     {
         return [
             new TwigFunction('pageTitle', [ $this, 'pageTitle' ]),
+            new TwigFunction('rpath', [ $this, 'rpath' ]),
         ];
     }
 
