@@ -173,7 +173,7 @@ class TranslationModel
      * @param string $key
      * @return string
      */
-    private function resolveMessage(string $key): string
+    public function resolveMessage(string $key): string
     {
         $resolvedKey = $this->isKeyAbsolute($key) ?
             mb_substr($key, 1) :
