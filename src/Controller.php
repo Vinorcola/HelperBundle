@@ -2,12 +2,12 @@
 
 namespace Vinorcola\HelperBundle;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Vinorcola\HelperBundle\Model\TranslationModel;
 
-abstract class Controller extends BaseController
+abstract class Controller extends AbstractController
 {
     /**
      * @var TranslationModel
