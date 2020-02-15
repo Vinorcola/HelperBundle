@@ -9,8 +9,8 @@ class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('vinorcola_helper');
+        $treeBuilder = new TreeBuilder('vinorcola_helper');
+        $rootNode = $treeBuilder->getRootNode();
 
         $rootNode
             ->children()
