@@ -2,7 +2,7 @@
 
 namespace Vinorcola\HelperBundle\Model;
 
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TranslationModel
 {
