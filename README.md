@@ -32,10 +32,10 @@ This translation system introduce a system of relative `keys` based on the route
 
 In this example,
 
-* `{{ 'message'|tr }}` is equivalent to `{{ myRouteName.message'|trans }}`
-* `{{ 'submit'|tr }}` is equivalent to `{{ myRouteName.submit'|trans }}`
-* `{{ 'cancel'|tr }}` is equivalent to `{{ myRouteName.cancel'|trans }}`
-* `{{ pageTitle() }}` is equivalent to `{{ 'cancel'|tr }}` or `{{ myRouteName.title'|trans }}`
+* `{{ 'message'|tr }}` is equivalent to `{{ 'myRouteName.message'|trans }}`
+* `{{ 'submit'|tr }}` is equivalent to `{{ 'myRouteName.submit'|trans }}`
+* `{{ 'cancel'|tr }}` is equivalent to `{{ 'myRouteName.cancel'|trans }}`
+* `{{ pageTitle() }}` is equivalent to `{{ 'title'|tr }}` or `{{ 'myRouteName.title'|trans }}`
 
 Furthermore, the system will auto-wrap translation parameters with percent (`%`):
 
