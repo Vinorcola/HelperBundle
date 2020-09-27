@@ -2,6 +2,7 @@
 
 namespace Vinorcola\HelperBundle\Model;
 
+use Symfony\Component\Translation\Exception\InvalidArgumentException;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TranslationModel
@@ -63,18 +64,15 @@ class TranslationModel
      */
     public function tr(string $key, array $parameters = [], string $domain = null): string
     {
-        return $this->doesKeyRequirePlural($key) ?
-            $this->translatePlural(
-                $this->resolveMessage($key),
-                $parameters[self::PLURAL_PARAMETER],
-                $parameters,
-                $domain
-            ) :
-            $this->translate(
-                $this->resolveMessage($key),
-                $parameters,
-                $domain
-            );
+        if ($this->doesKeyRequirePlural($key) && !\array_key_exists('count', $parameters)) {
+            throw new InvalidArgumentException('Plural key require a "count" parameter.');
+        }
+
+        return $this->translate(
+            $this->resolveMessage($key),
+            $parameters,
+            $domain
+        );
     }
 
     /**
@@ -148,7 +146,9 @@ class TranslationModel
      */
     public function translatePlural(string $key, int $count, array $parameters = [], string $domain = null): string
     {
-        return $this->translator->transChoice($key, $count, $this->resolveParameters($parameters), $domain);
+        return $this->translator->trans($key, $this->resolveParameters(\array_merge($parameters, [
+            'count' => $count,
+        ])), $domain);
     }
 
     /**
