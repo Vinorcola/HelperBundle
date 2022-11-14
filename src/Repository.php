@@ -8,19 +8,11 @@ use Doctrine\ORM\QueryBuilder;
 abstract class Repository
 {
     /**
-     * @var EntityManagerInterface
-     */
-    protected $entityManager;
-
-    /**
      * Repository constructor.
      *
      * @param EntityManagerInterface $entityManager
      */
-    public function __construct(EntityManagerInterface $entityManager)
-    {
-        $this->entityManager = $entityManager;
-    }
+    public function __construct(protected EntityManagerInterface $entityManager) {}
 
     /**
      * Must return the class of the linked entity.

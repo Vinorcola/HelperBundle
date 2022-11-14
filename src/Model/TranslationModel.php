@@ -10,24 +10,9 @@ class TranslationModel
     public const PLURAL_PARAMETER = 'count';
 
     /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var RouteNamespaceModel
-     */
-    private $routeNamespaceModel;
-
-    /**
      * @var string
      */
     private $attributePrefix;
-
-    /**
-     * @var string
-     */
-    private $separator;
 
     /**
      * TranslationModel constructor.
@@ -38,15 +23,12 @@ class TranslationModel
      * @param string              $separator
      */
     public function __construct(
-        TranslatorInterface $translator,
-        RouteNamespaceModel $routeNamespaceModel,
+        private TranslatorInterface $translator,
+        private RouteNamespaceModel $routeNamespaceModel,
         string $attributePrefix = 'attribute',
-        string $separator = '.'
+        private string $separator = '.'
     ) {
-        $this->translator = $translator;
-        $this->routeNamespaceModel = $routeNamespaceModel;
         $this->attributePrefix = $attributePrefix . $separator;
-        $this->separator = $separator;
     }
 
     /**
@@ -70,29 +52,6 @@ class TranslationModel
 
         return $this->translate(
             $this->resolveMessage($key),
-            $parameters,
-            $domain
-        );
-    }
-
-    /**
-     * Translate a pluralized key.
-     *
-     * The key may be relative (e.g. "myKey"). It will be prepended with the route name (e.g. "myRoute.myKey").
-     * The key may be absolute (e.g. "=myNamespace.myKey" which will be interpreted as "myNamespace.myKey").
-     *
-     * @param string      $key
-     * @param int         $nb
-     * @param string[]    $parameters
-     * @param string|null $domain
-     * @return string
-     * @deprecated Use tr with a pluralized key message (with a "+" at the end).
-     */
-    public function trPlural(string $key, int $nb, array $parameters = [], string $domain = null): string
-    {
-        return $this->translatePlural(
-            $this->resolveMessage($key),
-            $nb,
             $parameters,
             $domain
         );
@@ -125,9 +84,8 @@ class TranslationModel
      * @param string[]    $parameters
      * @param string|null $domain
      * @return string
-     * @deprecated For internal usage only. Use tr with an absolute key message (with a "=" at the beginning).
      */
-    public function translate(string $message, array $parameters = [], string $domain = null): string
+    private function translate(string $message, array $parameters = [], string $domain = null): string
     {
         return $this->translator->trans($message, $this->resolveParameters($parameters), $domain);
     }
@@ -142,9 +100,8 @@ class TranslationModel
      * @param string[]    $parameters
      * @param string|null $domain
      * @return string
-     * @deprecated For internal usage only. Use tr with an absolute pluralized key message (with a "=" at the beginning and a "+" at the end).
      */
-    public function translatePlural(string $key, int $count, array $parameters = [], string $domain = null): string
+    private function translatePlural(string $key, int $count, array $parameters = [], string $domain = null): string
     {
         return $this->translator->trans($key, $this->resolveParameters(\array_merge($parameters, [
             'count' => $count,

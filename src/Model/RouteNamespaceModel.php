@@ -7,26 +7,12 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class RouteNamespaceModel
 {
     /**
-     * @var RequestStack
-     */
-    private $requestStack;
-
-    /**
-     * @var string
-     */
-    private $separator;
-
-    /**
      * RouteNamespaceModel constructor.
      *
      * @param RequestStack $requestStack
      * @param string       $separator
      */
-    public function __construct(RequestStack $requestStack, string $separator = '.')
-    {
-        $this->requestStack = $requestStack;
-        $this->separator = $separator;
-    }
+    public function __construct(private RequestStack $requestStack, private string $separator = '.') {}
 
     /**
      * Return the base route namespace.
@@ -35,7 +21,7 @@ class RouteNamespaceModel
      */
     public function getBaseNamespace(): string
     {
-        $routeName = $this->requestStack->getMasterRequest()->get('_route');
+        $routeName = $this->requestStack->getMainRequest()->get('_route');
 
         return mb_substr($routeName, 0, mb_strrpos($routeName, $this->separator) + 1);
     }
@@ -47,6 +33,6 @@ class RouteNamespaceModel
      */
     public function getFullNamespace(): string
     {
-        return $this->requestStack->getMasterRequest()->get('_route') . $this->separator;
+        return $this->requestStack->getMainRequest()->get('_route') . $this->separator;
     }
 }

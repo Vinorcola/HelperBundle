@@ -7,26 +7,15 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class UrlGeneratorModel
 {
     /**
-     * @var UrlGeneratorInterface
-     */
-    private $urlGenerator;
-
-    /**
-     * @var RouteNamespaceModel
-     */
-    private $routeNamespaceModel;
-
-    /**
      * UrlGeneratorModel constructor.
      *
      * @param RouteNamespaceModel   $routeNamespaceModel
      * @param UrlGeneratorInterface $urlGenerator
      */
-    public function __construct(UrlGeneratorInterface $urlGenerator, RouteNamespaceModel $routeNamespaceModel)
-    {
-        $this->urlGenerator = $urlGenerator;
-        $this->routeNamespaceModel = $routeNamespaceModel;
-    }
+    public function __construct(
+        private UrlGeneratorInterface $urlGenerator,
+        private RouteNamespaceModel $routeNamespaceModel,
+    ) {}
 
     /**
      * @param string $name

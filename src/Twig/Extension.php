@@ -13,26 +13,15 @@ use Vinorcola\HelperBundle\Model\UrlGeneratorModel;
 class Extension extends AbstractExtension
 {
     /**
-     * @var TranslationModel
-     */
-    private $translationModel;
-
-    /**
-     * @var UrlGeneratorModel
-     */
-    private $urlGeneratorModel;
-
-    /**
      * Extension constructor.
      *
      * @param TranslationModel  $translationModel
      * @param UrlGeneratorModel $urlGeneratorModel
      */
-    public function __construct(TranslationModel $translationModel, UrlGeneratorModel $urlGeneratorModel)
-    {
-        $this->translationModel = $translationModel;
-        $this->urlGeneratorModel = $urlGeneratorModel;
-    }
+    public function __construct(
+        private TranslationModel $translationModel,
+        private UrlGeneratorModel $urlGeneratorModel,
+    ) {}
 
     /**
      * {@inheritdoc}
@@ -60,7 +49,7 @@ class Extension extends AbstractExtension
     }
 
     /**
-     * Generate a Url from a relative route name.
+     * Generate an Url from a relative route name.
      *
      * @param string $name
      * @param array  $parameters

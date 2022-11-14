@@ -2,6 +2,7 @@
 
 namespace Vinorcola\HelperBundle;
 
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
@@ -10,26 +11,22 @@ use Vinorcola\HelperBundle\Model\TranslationModel;
 abstract class Controller extends AbstractController
 {
     /**
-     * @var TranslationModel
-     */
-    protected $translationModel;
-
-    /**
      * Controller constructor.
      *
      * @param TranslationModel $translationModel
+     * @param ManagerRegistry  $entityRegistry
      */
-    public function __construct(TranslationModel $translationModel)
-    {
-        $this->translationModel = $translationModel;
-    }
+    public function __construct(
+        protected TranslationModel $translationModel,
+        protected ManagerRegistry $entityRegistry,
+    ) {}
 
     /**
      * Save the database.
      */
     protected function saveDatabase(): void
     {
-        $this->getDoctrine()->getManager()->flush();
+        $this->entityRegistry->getManager()->flush();
     }
 
     /**
